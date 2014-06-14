@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>fusty-flow.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>fusty-flow.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(Flow, window, document, undefined)</span> {</span><span class="hljs-pi">
+  'use strict'</span>;
+
+  <span class="hljs-keyword">var</span> extend = Flow.extend;
+  <span class="hljs-keyword">var</span> each = Flow.each;
+
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">addEvent</span><span class="hljs-params">(element, type, handler)</span> {</span>
+    <span class="hljs-keyword">if</span> (element.addEventListener) {
+      element.addEventListener(type, handler, <span class="hljs-literal">false</span>);
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (element.attachEvent) {
+      element.attachEvent(<span class="hljs-string">"on"</span> + type, handler);
+    } <span class="hljs-keyword">else</span> {
+      element[<span class="hljs-string">"on"</span> + type] = handler;
+    }
+  }
+
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">removeEvent</span><span class="hljs-params">(element, type, handler)</span> {</span>
+    <span class="hljs-keyword">if</span> (element.removeEventListener) {
+      element.removeEventListener(type, handler, <span class="hljs-literal">false</span>);
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (element.detachEvent) {
+      element.detachEvent(<span class="hljs-string">"on"</span> + type, handler);
+    } <span class="hljs-keyword">else</span> {
+      element[<span class="hljs-string">"on"</span> + type] = <span class="hljs-literal">null</span>;
+    }
+  }
+
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">removeElement</span><span class="hljs-params">(element)</span> {</span>
+    element.parentNode.removeChild(element);
+  }
+
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">isFunction</span><span class="hljs-params">(functionToCheck)</span> {</span>
+    <span class="hljs-keyword">var</span> getType = {};
+    <span class="hljs-keyword">return</span> functionToCheck &amp;&amp; getType.toString.call(functionToCheck) === <span class="hljs-string">'[object Function]'</span>;
+  }
+
+  <span class="hljs-comment">/**
+   * Not resumable file upload library, for IE7-IE9 browsers
+   * @name FustyFlow
+   * @param [opts]
+   * @param {bool} [opts.singleFile]
+   * @param {string} [opts.fileParameterName]
+   * @param {Object|Function} [opts.query]
+   * @param {Object} [opts.headers]
+   * @param {string} [opts.target]
+   * @param {Function} [opts.generateUniqueIdentifier]
+   * @param {bool} [opts.matchJSON]
+   * @constructor
+   */</span>
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">FustyFlow</span><span class="hljs-params">(opts)</span> {</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>Shortcut of “r instanceof Flow”</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">this</span>.support = <span class="hljs-literal">false</span>;
+
+    <span class="hljs-keyword">this</span>.files = [];
+    <span class="hljs-keyword">this</span>.events = [];
+    <span class="hljs-keyword">this</span>.defaults = {
+      simultaneousUploads: <span class="hljs-number">3</span>,
+      fileParameterName: <span class="hljs-string">'file'</span>,
+      query: {},
+      target: <span class="hljs-string">'/'</span>,
+      generateUniqueIdentifier: <span class="hljs-literal">null</span>,
+      matchJSON: <span class="hljs-literal">false</span>
+    };
+
+    <span class="hljs-keyword">var</span> $ = <span class="hljs-keyword">this</span>;
+
+    <span class="hljs-keyword">this</span>.inputChangeEvent = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(event)</span> {</span>
+      <span class="hljs-keyword">var</span> input = event.srcElement;
+      removeEvent(input, <span class="hljs-string">'change'</span>, $.inputChangeEvent);
+      <span class="hljs-keyword">var</span> newClone = input.cloneNode(<span class="hljs-literal">false</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>change current input with new one</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      input.parentNode.replaceChild(newClone, input);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>old input will be attached to hidden form</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      $.addFile(input, event);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>reset new input</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      newClone.value = <span class="hljs-string">''</span>;
+      addEvent(newClone, <span class="hljs-string">'change'</span>, $.inputChangeEvent);
+    };
+
+    <span class="hljs-keyword">this</span>.opts = Flow.extend({}, <span class="hljs-keyword">this</span>.defaults, opts || {});
+  }
+
+  FustyFlow.prototype = {
+    on: Flow.prototype.on,
+    fire: Flow.prototype.fire,
+    cancel: Flow.prototype.cancel,
+    assignBrowse: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(domNodes)</span> {</span>
+      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> domNodes.length == <span class="hljs-string">'undefined'</span>) {
+        domNodes = [domNodes];
+      }
+      each(domNodes, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(domNode)</span> {</span>
+        <span class="hljs-keyword">var</span> input;
+        <span class="hljs-keyword">if</span> (domNode.tagName === <span class="hljs-string">'INPUT'</span> &amp;&amp; domNode.type === <span class="hljs-string">'file'</span>) {
+          input = domNode;
+        } <span class="hljs-keyword">else</span> {
+          input = document.createElement(<span class="hljs-string">'input'</span>);
+          input.setAttribute(<span class="hljs-string">'type'</span>, <span class="hljs-string">'file'</span>);
+
+          extend(domNode.style, {
+            display: <span class="hljs-string">'inline-block'</span>,
+            position: <span class="hljs-string">'relative'</span>,
+            overflow: <span class="hljs-string">'hidden'</span>,
+            verticalAlign: <span class="hljs-string">'top'</span>
+          });
+
+          extend(input.style, {
+            position: <span class="hljs-string">'absolute'</span>,
+            top: <span class="hljs-number">0</span>,
+            right: <span class="hljs-number">0</span>,
+            fontFamily: <span class="hljs-string">'Arial'</span>,</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>4 persons reported this, the max values that worked for them were 243, 236, 236, 118</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            fontSize: <span class="hljs-string">'118px'</span>,
+            margin: <span class="hljs-number">0</span>,
+            padding: <span class="hljs-number">0</span>,
+            opacity: <span class="hljs-number">0</span>,
+            filter: <span class="hljs-string">'alpha(opacity=0)'</span>,
+            cursor: <span class="hljs-string">'pointer'</span>
+          });
+
+          domNode.appendChild(input);
+        }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>When new files are added, simply append them to the overall list</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        addEvent(input, <span class="hljs-string">'change'</span>, <span class="hljs-keyword">this</span>.inputChangeEvent);
+      }, <span class="hljs-keyword">this</span>);
+    },
+    assignDrop: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>not supported</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    },
+    unAssignDrop: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>not supported</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    },
+    isUploading: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+      <span class="hljs-keyword">var</span> uploading = <span class="hljs-literal">false</span>;
+      each(<span class="hljs-keyword">this</span>.files, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(file)</span> {</span>
+        <span class="hljs-keyword">if</span> (file.isUploading()) {
+          uploading = <span class="hljs-literal">true</span>;
+          <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+        }
+      });
+      <span class="hljs-keyword">return</span> uploading;
+    },
+    upload: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>Kick off the queue</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">var</span> files = <span class="hljs-number">0</span>;
+      each(<span class="hljs-keyword">this</span>.files, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(file)</span> {</span>
+        <span class="hljs-keyword">if</span> (file.progress() == <span class="hljs-number">1</span>) {
+          <span class="hljs-keyword">return</span>;
+        }
+        <span class="hljs-keyword">if</span> (file.isUploading()) {
+          files++;
+          <span class="hljs-keyword">return</span>;
+        }
+        <span class="hljs-keyword">if</span> (files++ &gt;= <span class="hljs-keyword">this</span>.opts.simultaneousUploads) {
+          <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+        }
+        <span class="hljs-keyword">if</span> (files == <span class="hljs-number">1</span>) {
+          <span class="hljs-keyword">this</span>.fire(<span class="hljs-string">'uploadStart'</span>);
+        }
+        file.send();
+      }, <span class="hljs-keyword">this</span>);
+      <span class="hljs-keyword">if</span> (!files) {
+        <span class="hljs-keyword">this</span>.fire(<span class="hljs-string">'complete'</span>);
+      }
+    },
+    pause: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+      each(<span class="hljs-keyword">this</span>.files, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(file)</span> {</span>
+        file.abort();
+      });
+    },
+    resume: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+      <span class="hljs-keyword">this</span>.upload();
+    },
+    progress: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+      <span class="hljs-keyword">var</span> totalDone = <span class="hljs-number">0</span>;
+      <span class="hljs-keyword">var</span> totalFiles = <span class="hljs-number">0</span>;
+      each(<span class="hljs-keyword">this</span>.files, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(file)</span> {</span>
+        totalDone += file.progress();
+        totalFiles++;
+      });
+      <span class="hljs-keyword">return</span> totalFiles &gt; <span class="hljs-number">0</span> ? totalDone / totalFiles : <span class="hljs-number">0</span>;
+    },
+    addFiles: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(elementsList, event)</span> {</span>
+      <span class="hljs-keyword">var</span> files = [];
+      each(elementsList, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(element)</span> {</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>is domElement ?</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">if</span> (element.nodeType === <span class="hljs-number">1</span> &amp;&amp; element.value) {
+          <span class="hljs-keyword">var</span> f = <span class="hljs-keyword">new</span> FustyFlowFile(<span class="hljs-keyword">this</span>, element);
+          <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.fire(<span class="hljs-string">'fileAdded'</span>, f, event)) {
+            files.push(f);
+          }
+        }
+      }, <span class="hljs-keyword">this</span>);
+      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.fire(<span class="hljs-string">'filesAdded'</span>, files, event)) {
+        each(files, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(file)</span> {</span>
+          <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.opts.singleFile &amp;&amp; <span class="hljs-keyword">this</span>.files.length &gt; <span class="hljs-number">0</span>) {
+            <span class="hljs-keyword">this</span>.removeFile(<span class="hljs-keyword">this</span>.files[<span class="hljs-number">0</span>]);
+          }
+          <span class="hljs-keyword">this</span>.files.push(file);
+        }, <span class="hljs-keyword">this</span>);
+      }
+      <span class="hljs-keyword">this</span>.fire(<span class="hljs-string">'filesSubmitted'</span>, files, event);
+    },
+    addFile: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(file, event)</span> {</span>
+      <span class="hljs-keyword">this</span>.addFiles([file], event);
+    },
+    generateUniqueIdentifier: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(element)</span> {</span>
+      <span class="hljs-keyword">var</span> custom = <span class="hljs-keyword">this</span>.opts.generateUniqueIdentifier;
+      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> custom === <span class="hljs-string">'function'</span>) {
+        <span class="hljs-keyword">return</span> custom(element);
+      }
+      <span class="hljs-keyword">return</span> <span class="hljs-string">'xxxxxxxx-xxxx-yxxx-yxxx-xxxxxxxxxxxx'</span>.replace(<span class="hljs-regexp">/[xy]/g</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(c)</span> {</span>
+        <span class="hljs-keyword">var</span> r = <span class="hljs-built_in">Math</span>.random() * <span class="hljs-number">16</span> | <span class="hljs-number">0</span>, v = c == <span class="hljs-string">'x'</span> ? r : (r &amp; <span class="hljs-number">0x3</span> | <span class="hljs-number">0x8</span>);
+        <span class="hljs-keyword">return</span> v.toString(<span class="hljs-number">16</span>);
+      });
+    },
+    getFromUniqueIdentifier: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(uniqueIdentifier)</span> {</span>
+      <span class="hljs-keyword">var</span> ret = <span class="hljs-literal">false</span>;
+      each(<span class="hljs-keyword">this</span>.files, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(f)</span> {</span>
+        <span class="hljs-keyword">if</span> (f.uniqueIdentifier == uniqueIdentifier) ret = f;
+      });
+      <span class="hljs-keyword">return</span> ret;
+    },
+    removeFile: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(file)</span> {</span>
+      <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-keyword">this</span>.files.length - <span class="hljs-number">1</span>; i &gt;= <span class="hljs-number">0</span>; i--) {
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.files[i] === file) {
+          <span class="hljs-keyword">this</span>.files.splice(i, <span class="hljs-number">1</span>);
+        }
+      }
+    },
+    getSize: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>undefined</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    },
+    timeRemaining: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>undefined</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    },
+    sizeUploaded: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>undefined</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    }
+  };
+
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">FustyFlowFile</span><span class="hljs-params">(flowObj, element)</span> {</span>
+    <span class="hljs-keyword">this</span>.flowObj = flowObj;
+    <span class="hljs-keyword">this</span>.element = element;
+    <span class="hljs-keyword">this</span>.name = element.value &amp;&amp; element.value.replace(<span class="hljs-regexp">/.*(\/|\\)/</span>, <span class="hljs-string">""</span>);
+    <span class="hljs-keyword">this</span>.relativePath = <span class="hljs-keyword">this</span>.name;
+    <span class="hljs-keyword">this</span>.uniqueIdentifier = flowObj.generateUniqueIdentifier(element);
+    <span class="hljs-keyword">this</span>.iFrame = <span class="hljs-literal">null</span>;
+
+    <span class="hljs-keyword">this</span>.finished = <span class="hljs-literal">false</span>;
+    <span class="hljs-keyword">this</span>.error = <span class="hljs-literal">false</span>;
+
+    <span class="hljs-keyword">var</span> $ = <span class="hljs-keyword">this</span>;
+    <span class="hljs-keyword">this</span>.iFrameLoaded = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(event)</span> {</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <p>when we remove iframe from dom
+the request stops, but in IE load
+event fires</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">if</span> (!$.iFrame || !$.iFrame.parentNode) {
+        <span class="hljs-keyword">return</span>;
+      }
+      $.finished = <span class="hljs-literal">true</span>;
+      <span class="hljs-keyword">try</span> {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <p>fixing Opera 10.53</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">if</span> ($.iFrame.contentDocument &amp;&amp;
+          $.iFrame.contentDocument.body &amp;&amp;
+          $.iFrame.contentDocument.body.innerHTML == <span class="hljs-string">"false"</span>) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <p>In Opera event is fired second time
+when body.innerHTML changed from false
+to server response approx. after 1 sec
+when we upload file with iframe</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>          <span class="hljs-keyword">return</span>;
+        }
+      } <span class="hljs-keyword">catch</span> (error) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-18">&#182;</a>
+              </div>
+              <p>IE may throw an “access is denied” error when attempting to access contentDocument</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        $.error = <span class="hljs-literal">true</span>;
+        $.abort();
+        $.flowObj.fire(<span class="hljs-string">'fileError'</span>, $, error);
+        <span class="hljs-keyword">return</span>;
+      }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-19">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-19">&#182;</a>
+              </div>
+              <p>iframe.contentWindow.document - for IE&lt;7</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">var</span> doc = $.iFrame.contentDocument || $.iFrame.contentWindow.document;
+      <span class="hljs-keyword">var</span> innerHtml = doc.body.innerHTML;
+      <span class="hljs-keyword">if</span> ($.flowObj.opts.matchJSON) {
+        innerHtml = <span class="hljs-regexp">/(\{.*\})/</span>.exec(innerHtml)[<span class="hljs-number">0</span>];
+      }
+
+      $.abort();
+      $.flowObj.fire(<span class="hljs-string">'fileSuccess'</span>, $, innerHtml);
+      $.flowObj.upload();
+    };
+    <span class="hljs-keyword">this</span>.bootstrap();
+  }
+
+  FustyFlowFile.prototype = {
+    getExtension: Flow.FlowFile.prototype.getExtension,
+    getType: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-20">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-20">&#182;</a>
+              </div>
+              <p>undefined</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    },
+    send: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.finished) {
+        <span class="hljs-keyword">return</span>;
+      }
+      <span class="hljs-keyword">var</span> o = <span class="hljs-keyword">this</span>.flowObj.opts;
+      <span class="hljs-keyword">var</span> form = <span class="hljs-keyword">this</span>.createForm();
+      <span class="hljs-keyword">var</span> params = o.query;
+      <span class="hljs-keyword">if</span> (isFunction(params)) {
+        params = params(<span class="hljs-keyword">this</span>);
+      }
+      params[o.fileParameterName] = <span class="hljs-keyword">this</span>.element;
+      params[<span class="hljs-string">'flowFilename'</span>] = <span class="hljs-keyword">this</span>.name;
+      params[<span class="hljs-string">'flowRelativePath'</span>] = <span class="hljs-keyword">this</span>.relativePath;
+      params[<span class="hljs-string">'flowIdentifier'</span>] = <span class="hljs-keyword">this</span>.uniqueIdentifier;
+
+      <span class="hljs-keyword">this</span>.addFormParams(form, params);
+      addEvent(<span class="hljs-keyword">this</span>.iFrame, <span class="hljs-string">'load'</span>, <span class="hljs-keyword">this</span>.iFrameLoaded);
+      form.submit();
+      removeElement(form);
+    },
+    abort: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.iFrame) {
+        <span class="hljs-keyword">this</span>.iFrame.setAttribute(<span class="hljs-string">'src'</span>, <span class="hljs-string">'java'</span> + <span class="hljs-built_in">String</span>.fromCharCode(<span class="hljs-number">115</span>) + <span class="hljs-string">'cript:false;'</span>);
+        removeElement(<span class="hljs-keyword">this</span>.iFrame);
+        <span class="hljs-keyword">this</span>.iFrame = <span class="hljs-literal">null</span>;
+      }
+    },
+    cancel: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+      <span class="hljs-keyword">this</span>.abort();
+      <span class="hljs-keyword">this</span>.flowObj.removeFile(<span class="hljs-keyword">this</span>);
+    },
+    retry: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+      <span class="hljs-keyword">this</span>.bootstrap();
+      <span class="hljs-keyword">this</span>.flowObj.upload();
+    },
+    bootstrap: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+      <span class="hljs-keyword">this</span>.abort();
+      <span class="hljs-keyword">this</span>.error = <span class="hljs-literal">false</span>;
+    },
+    timeRemaining: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-21">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-21">&#182;</a>
+              </div>
+              <p>undefined</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    },
+    sizeUploaded: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-22">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-22">&#182;</a>
+              </div>
+              <p>undefined</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    },
+    resume: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+      <span class="hljs-keyword">this</span>.flowObj.upload();
+    },
+    pause: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+      <span class="hljs-keyword">this</span>.abort();
+    },
+    isUploading: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.iFrame !== <span class="hljs-literal">null</span>;
+    },
+    isComplete: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.progress() === <span class="hljs-number">1</span>;
+    },
+    progress: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.error) {
+        <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;
+      }
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.finished ? <span class="hljs-number">1</span> : <span class="hljs-number">0</span>;
+    },
+
+    createIframe: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+      <span class="hljs-keyword">var</span> iFrame = (<span class="hljs-regexp">/MSIE (6|7|8)/</span>).test(navigator.userAgent) ?
+        document.createElement(<span class="hljs-string">'&lt;iframe name="'</span> + <span class="hljs-keyword">this</span>.uniqueIdentifier + <span class="hljs-string">'_iframe'</span> + <span class="hljs-string">'"&gt;'</span>) :
+        document.createElement(<span class="hljs-string">'iframe'</span>);
+
+      iFrame.setAttribute(<span class="hljs-string">'id'</span>, <span class="hljs-keyword">this</span>.uniqueIdentifier + <span class="hljs-string">'_iframe_id'</span>);
+      iFrame.setAttribute(<span class="hljs-string">'name'</span>, <span class="hljs-keyword">this</span>.uniqueIdentifier + <span class="hljs-string">'_iframe'</span>);
+      iFrame.style.display = <span class="hljs-string">'none'</span>;
+      document.body.appendChild(iFrame);
+      <span class="hljs-keyword">return</span> iFrame;
+    },
+    createForm: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+      <span class="hljs-keyword">var</span> target = <span class="hljs-keyword">this</span>.flowObj.opts.target;
+      <span class="hljs-keyword">var</span> form = document.createElement(<span class="hljs-string">'form'</span>);
+      form.encoding = <span class="hljs-string">"multipart/form-data"</span>;
+      form.method = <span class="hljs-string">"POST"</span>;
+      form.setAttribute(<span class="hljs-string">'action'</span>, target);
+      <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>.iFrame) {
+        <span class="hljs-keyword">this</span>.iFrame = <span class="hljs-keyword">this</span>.createIframe();
+      }
+      form.setAttribute(<span class="hljs-string">'target'</span>, <span class="hljs-keyword">this</span>.iFrame.name);
+      form.style.display = <span class="hljs-string">'none'</span>;
+      document.body.appendChild(form);
+      <span class="hljs-keyword">return</span> form;
+    },
+    addFormParams: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(form, params)</span> {</span>
+      <span class="hljs-keyword">var</span> input;
+      each(params, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(value, key)</span> {</span>
+        <span class="hljs-keyword">if</span> (value &amp;&amp; value.nodeType === <span class="hljs-number">1</span>) {
+          input = value;
+        } <span class="hljs-keyword">else</span> {
+          input = document.createElement(<span class="hljs-string">'input'</span>);
+          input.setAttribute(<span class="hljs-string">'value'</span>, value);
+        }
+        input.setAttribute(<span class="hljs-string">'name'</span>, key);
+        form.appendChild(input);
+      });
+    }
+  };
+
+  FustyFlow.FustyFlowFile = FustyFlowFile;
+
+  <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> module !== <span class="hljs-string">'undefined'</span>) {
+    module.exports = FustyFlow;
+  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> define === <span class="hljs-string">"function"</span> &amp;&amp; define.amd) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-23">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-23">&#182;</a>
+              </div>
+              <p>AMD/requirejs: Define the module</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    define(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
+      <span class="hljs-keyword">return</span> FustyFlow;
+    });
+  } <span class="hljs-keyword">else</span> {
+    window.FustyFlow = FustyFlow;
+  }
+})(window.Flow, window, document);</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

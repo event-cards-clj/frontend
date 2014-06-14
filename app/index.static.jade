@@ -1,0 +1,64 @@
+doctype html
+html(lang='en-US',ng-app="app")
+  head
+    meta(http-equiv='content-type', content='text/html; charset=UTF-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0, user-scalable=yes')
+    title
+    link(rel='shortcut icon', type='image/x-icon', href='/favicon.ico')
+    script(src='js/vendor.js')
+    script(src='js/views.js')
+    script(src='js/app.js')
+    link(rel='stylesheet', href='css/vendor.css')
+    link(rel='stylesheet', href='css/app.css')
+    link(rel='stylesheet', href='//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css')
+    script(type='text/javascript').
+      require('app')
+  body
+    nav.top-bar(data-topbar='')
+      ul.title-area
+        li.name
+          h1
+            a(href='#') Events
+        // Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone
+        li.toggle-topbar.menu-icon
+          a(href='#')
+            span Menu
+
+    .row
+      .small-3.centered-columns
+      .panel
+        h3 Register your event here!
+
+        form
+          .row
+            .large-12.columns
+              label
+                | Event Name
+                input(type='text', placeholder='Event name')
+          .row
+            .large-6.columns
+              label
+                | Organizer:
+                input(type='text', placeholder='Organizer Name')
+            .large-6.columns
+              label
+                | Organizer Email:
+                input(type='text', placeholder='How people can contact you')
+          .row
+            .large-4.columns
+              label
+                | Location
+                input(type='text', placeholder='Location')
+            .large-4.columns
+              label
+                | Date &amp; Time
+                input(type='datetime', placeholder='Date & Time')
+            .large-4.columns
+              label
+                | Location
+                input(type='text', placeholder='Location')
+          .row
+            .large-12.columns
+              label
+                | Description
+                textarea(placeholder='Write a short description here, just so people know what they\'re getting themselves into...', rows="10")

@@ -1,0 +1,54 @@
+.row#edit-form(ng-show="editing")
+  form
+  fieldset
+    legend Edit information for {{person.firstName}} {{person.lastName}}
+    .row
+      .large-4.columns
+        label First Name
+        input(type='text', placeholder='First Name', ng-model="person.firstName")
+      .large-4.columns
+        label Last Name
+        input(type='text', placeholder='Last Name', ng-model="person.lastName")
+      .large-4.columns
+        label Email Address
+        input(type='text', placeholder='Email Address', ng-model="person.email")
+    .row
+      .large-4.columns
+        label Username
+        input(type='text', placeholder='Username', ng-model="person.username")
+      .large-4.columns
+        .row.collapse
+          label Twitter
+          .small-3.columns
+            span.prefix @
+          .small-9.columns
+            input(type='text', placeholder='Username', ng-model="person.twitter")
+      .large-4.columns
+        .row.collapse
+          label Homepage
+          .small-3.columns
+            span.prefix http://
+          .small-9.columns
+            input(type='text', placeholder='Homepage', ng-model="person.homepage")
+    .row
+      .large-12.columns
+        label Comments
+        textarea(placeholder='Comments or questions...', ng-model="person.comments")
+    .row
+      .large-12.columns
+        button.button.small(ng-click="save()") Save
+.row
+  .panel.callout
+    .row
+      .large-6.columns
+        h5 {{person.firstName}} {{person.lastName}} &nbsp;
+          button.button.tiny(ng-click="edit()") Edit
+        
+        p 
+          sup
+            i @{{person.twitter}}
+        p {{person.email}}
+        p 
+          a(href="http://{{person.homepage}}") http://{{person.homepage}}
+      .large-6.columns
+        p {{person.comments}}
