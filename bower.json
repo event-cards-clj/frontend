@@ -21,7 +21,7 @@
     "angular-xeditable": "~0.1.8",
     "ngprogress-lite": "~1.0.4",
     "angular-promise-tracker": "~2.0.0",
-    "foundation": "~5.2.2"
+    "foundation": "https://github.com/daviesgeek/foundation"
   },
   "devDependencies": {
     "angular-mocks": "1.2.6",
